@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════
-   GHEFSA · app.js
+   Grupo HEFSA · app.js
    Vanilla JS, sin dependencias (Lenis opcional para el scroll inercial).
    Un único bucle rAF reparte el trabajo entre:
      · tasks      → tareas ligadas al scroll (solo corren si hubo scroll)
@@ -284,7 +284,7 @@
         const shadow = $('#markShadow');
         if (!hero || !plane) return;
 
-        /* Extrusión: N copias de la G apiladas en Z, de gris oscuro (atrás) a acero claro (frente). El wordmark HEFSA solo va en la cara frontal */
+        /* Extrusión: N copias de la G apiladas en Z, de gris oscuro (atrás) a acero claro (frente). El wordmark HEFSA va en las caras frontal y trasera (esta última girada 180°), así se lee bien también cuando la G arranca el giro de espaldas */
         const NS = 'http://www.w3.org/2000/svg';
         const N = mqDesktop.matches ? 30 : 20;
         const stack = [];
@@ -304,11 +304,15 @@
             layers.insertBefore(svg, face);
             stack.push(svg);
         }
+        const back = face.cloneNode(true);
+        back.setAttribute('class', 'mark-back');
+        layers.appendChild(back);
         let depth = 0;
         const layout = () => {
             depth = scene.offsetWidth * .085;
             stack.forEach((s, i) => { s.style.transform = `translateZ(${(lerp(-depth / 2, depth / 2, i / (N - 1))).toFixed(2)}px)`; });
             face.style.transform = `translateZ(${(depth / 2 + .6).toFixed(2)}px)`;
+            back.style.transform = `rotateY(180deg) translateZ(${(depth / 2 + .6).toFixed(2)}px)`;
         };
         layout();
         onResize.push(layout);
@@ -633,7 +637,7 @@
             }
             if (giant && !reduced) {
                 const r = giant.getBoundingClientRect();
-                if (r.top < vh + 200) giant.style.setProperty('--fy', (clamp((r.top - vh * .55) / (vh * .45)) * 70).toFixed(1));
+                if (r.top < vh + 200) giant.style.setProperty('--fy', (clamp((r.top - vh * .8) / (vh * .3)) * 70).toFixed(1));
             }
         });
     }
@@ -709,7 +713,7 @@
 
             const d = new FormData(form);
             const lines = [
-                `Hola GHEFSA, soy ${String(d.get('nombre')).trim()}.`,
+                `Hola Grupo HEFSA, soy ${String(d.get('nombre')).trim()}.`,
                 `Quiero cotizar: ${d.get('tipo')}.`,
                 String(d.get('ubicacion')).trim() && `Ubicación de la obra: ${String(d.get('ubicacion')).trim()}.`,
                 String(d.get('mensaje')).trim() && `Detalles: ${String(d.get('mensaje')).trim()}`,
